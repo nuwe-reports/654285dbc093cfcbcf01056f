@@ -299,9 +299,111 @@ class RoomControllerUnitTest{
     private ObjectMapper objectMapper;
 
     @Test
-    void this_is_a_test(){
-        // DELETE ME
-        assertThat(true).isEqualTo(false);
+    void should_get_all_rooms() throws Exception {
+        Room room = new Room("optometry");
+        Room room2 = new Room("dermatology");
+        List<Room> rooms = new ArrayList<>();
+        rooms.add(room);
+        rooms.add(room2);
+
+        when(roomRepository.findAll()).thenReturn(rooms);
+
+        mockMvc.perform(get("/api/rooms"))
+                .andExpect(status().isOk())
+                .andExpect(content().json(objectMapper.writeValueAsString(rooms)));
+    }
+
+    @Test
+    void should_not_get_all_rooms() throws Exception {
+        List<Room> rooms = new ArrayList<>();
+
+        when(roomRepository.findAll()).thenReturn(rooms);
+
+        mockMvc.perform(get("/api/rooms"))
+                .andExpect(status().isNoContent());
+    }
+
+    @Test
+    void should_get_room_by_name() throws Exception {
+        Room room = new Room("optometry");
+
+        Optional<Room> optionalRoom = Optional.of(room);
+
+        when(roomRepository.findByRoomName(room.getRoomName())).thenReturn(optionalRoom);
+
+        assertThat(optionalRoom).isPresent();
+        assertThat(optionalRoom.get().getRoomName()).isEqualTo(room.getRoomName());
+        assertThat(optionalRoom.get().getRoomName()).isEqualTo("optometry");
+        mockMvc.perform(get("/api/rooms/" + room.getRoomName()))
+                .andExpect(status().isOk())
+                .andExpect(content().json(objectMapper.writeValueAsString(room)));
+    }
+
+    @Test
+    void should_not_get_room_by_name() throws Exception {
+        String name = "optometry";
+        mockMvc.perform(get("/api/rooms/" + name))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void should_create_room() throws Exception {
+        Room room = new Room("optometry");
+
+        mockMvc.perform(post("/api/room").contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(room)))
+                .andExpect(status().isCreated())
+                .andExpect(content().json(objectMapper.writeValueAsString(room)));
+    }
+
+    @Test
+    void should_create_room_with_null_name() throws Exception {
+        Room room = new Room();
+
+        mockMvc.perform(post("/api/room").contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(room)))
+                .andExpect(status().isCreated())
+                .andExpect(content().json(objectMapper.writeValueAsString(room)));
+    }
+
+    @Test
+    void should_create_room_send_other_class() throws Exception {
+        //TODO: This class must implement validations, this test should fail or throw exception
+        Patient patient = new Patient();
+
+        mockMvc.perform(post("/api/room").contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(patient)))
+                .andExpect(status().isCreated());
+    }
+
+    @Test
+    void should_delete_room() throws Exception {
+        Room room = new Room("optometry");
+
+        Optional<Room> optionalRoom = Optional.of(room);
+
+        when(roomRepository.findByRoomName(room.getRoomName())).thenReturn(optionalRoom);
+
+        assertThat(optionalRoom).isPresent();
+        assertThat(optionalRoom.get().getRoomName()).isEqualTo(room.getRoomName());
+        assertThat(room.getRoomName()).isEqualTo("optometry");
+
+        mockMvc.perform(delete("/api/rooms/" + room.getRoomName()))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void should_not_delete_rooms() throws Exception {
+        String name = "optometry";
+
+        mockMvc.perform(delete("/api/rooms/" + name))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void should_delete_all_rooms() throws Exception {
+        mockMvc.perform(delete("/api/rooms"))
+                .andExpect(status().isOk());
     }
 
 }
