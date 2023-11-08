@@ -303,7 +303,7 @@ class EntityUnitTest {
     @Test
     void should_check_overlap_startsAt_attribute(){
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm dd/MM/yyyy");
-        LocalDateTime newFinishesAt = LocalDateTime.parse("19:30 24/04/2024", formatter);
+        LocalDateTime newFinishesAt = LocalDateTime.parse("20:30 24/04/2023", formatter);
 
         appointment1.setFinishesAt(newFinishesAt);
 
@@ -321,25 +321,26 @@ class EntityUnitTest {
     }
 
     @Test
-    void should_overlaps_when_past_appointment_starts_between_current(){
+    void should_overlaps_when_new_appointment_finish_between_current(){
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm dd/MM/yyyy");
-        LocalDateTime newStartsAt = LocalDateTime.parse("19:00 24/04/2023", formatter);
+        LocalDateTime newStartAt = LocalDateTime.parse("18:00 24/04/2023", formatter);
+        LocalDateTime newFinishAt = LocalDateTime.parse("19:00 24/04/2023", formatter);
 
-        appointment2.setStartsAt(newStartsAt);
+        appointment2.setStartsAt(newStartAt);
+        appointment2.setFinishesAt(newFinishAt);
 
         assertThat(appointment1.overlaps(appointment2)).isTrue();
     }
-
     @Test
-    void should_overlaps_when_past_appointment_starts_before_current_but_ends_after(){
+    void should_overlaps_when_new_appointment_starts_between_current(){
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm dd/MM/yyyy");
-        LocalDateTime newStartsAt = LocalDateTime.parse("17:00 24/04/2023", formatter);
+        LocalDateTime newStartsAt = LocalDateTime.parse("19:00 24/04/2023", formatter);
         LocalDateTime newFinishesAt = LocalDateTime.parse("20:30 24/04/2023", formatter);
 
         appointment2.setStartsAt(newStartsAt);
         appointment2.setFinishesAt(newFinishesAt);
 
-        assertThat(appointment2.overlaps(appointment1)).isTrue();
+        assertThat(appointment1.overlaps(appointment2)).isTrue();
     }
 
     @Test

@@ -72,10 +72,8 @@ public class AppointmentController {
 
     }
 
-
     @DeleteMapping("/appointments/{id}")
     public ResponseEntity<HttpStatus> deleteAppointment(@PathVariable("id") long id){
-
         Optional<Appointment> appointment = appointmentRepository.findById(id);
 
         if (!appointment.isPresent()){
