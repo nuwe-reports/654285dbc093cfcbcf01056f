@@ -64,7 +64,8 @@ class DoctorControllerUnitTest{
         when(doctorRepository.findAll()).thenReturn(doctors);
 
         mockMvc.perform(get("/api/doctors"))
-                .andExpect(status().isOk());
+                .andExpect(status().isOk())
+                .andExpect(content().json(objectMapper.writeValueAsString(doctors)));
     }
 
     @Test
@@ -87,7 +88,8 @@ class DoctorControllerUnitTest{
         assertThat(optionalDoctor.get().getId()).isEqualTo(doctor.getId());
         assertThat(doctor.getId()).isEqualTo(10);
         mockMvc.perform(get("/api/doctors/" + doctor.getId()))
-                .andExpect(status().isOk());
+                .andExpect(status().isOk())
+                .andExpect(content().json(objectMapper.writeValueAsString(doctor)));
     }
 
     @Test
@@ -103,7 +105,8 @@ class DoctorControllerUnitTest{
 
         mockMvc.perform(post("/api/doctor").contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(doctor)))
-                .andExpect(status().isCreated());
+                .andExpect(status().isCreated())
+                .andExpect(content().json(objectMapper.writeValueAsString(doctor)));
     }
 
     @Test
@@ -112,7 +115,8 @@ class DoctorControllerUnitTest{
 
         mockMvc.perform(post("/api/doctor").contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(doctor)))
-                .andExpect(status().isCreated());
+                .andExpect(status().isCreated())
+                .andExpect(content().json(objectMapper.writeValueAsString(doctor)));
     }
 
     @Test
@@ -171,10 +175,114 @@ class PatientControllerUnitTest{
     private ObjectMapper objectMapper;
 
     @Test
-    void this_is_a_test(){
-        // DELETE ME
-        assertThat(true).isEqualTo(false);
+    void should_get_all_patients() throws Exception {
+        Patient patient = new Patient("julio","arias",25,"julio@email.com");
+        Patient patient2 = new Patient("ana","lopez",45,"ana@email.com");
+        List<Patient> patients = new ArrayList<>();
+        patients.add(patient);
+        patients.add(patient2);
+
+        when(patientRepository.findAll()).thenReturn(patients);
+
+        mockMvc.perform(get("/api/patients"))
+                .andExpect(status().isOk())
+                .andExpect(content().json(objectMapper.writeValueAsString(patients)));
+
     }
+
+    @Test
+    void should_not_get_all_patients() throws Exception {
+        List<Patient> patients = new ArrayList<>();
+
+        when(patientRepository.findAll()).thenReturn(patients);
+
+        mockMvc.perform(get("/api/patients"))
+                .andExpect(status().isNoContent());
+    }
+
+    @Test
+    void should_get_patient_by_id() throws Exception {
+        Patient patient = new Patient("jose","lopez",35,"jose@email.com");
+        patient.setId(10);
+        Optional<Patient> optionalPatient = Optional.of(patient);
+
+        when(patientRepository.findById(patient.getId())).thenReturn(optionalPatient);
+
+        assertThat(optionalPatient).isPresent();
+        assertThat(optionalPatient.get().getId()).isEqualTo(patient.getId());
+        assertThat(patient.getId()).isEqualTo(10);
+        mockMvc.perform(get("/api/patients/" + patient.getId()))
+                .andExpect(status().isOk())
+                .andExpect(content().json(objectMapper.writeValueAsString(patient)));
+    }
+
+    @Test
+    void should_not_get_patient_by_id() throws Exception {
+        long id = 10;
+        mockMvc.perform(get("/api/patients/" + id))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void should_create_patient() throws Exception {
+        Patient patient = new Patient("julio","lopera",45,"julio@email.com");
+
+        mockMvc.perform(post("/api/patient").contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(patient)))
+                .andExpect(status().isCreated())
+                .andExpect(content().json(objectMapper.writeValueAsString(patient)));
+    }
+
+    @Test
+    void should_create_patient_with_null_attributes() throws Exception {
+        Patient patient = new Patient();
+
+        mockMvc.perform(post("/api/patient").contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(patient)))
+                .andExpect(status().isCreated())
+                .andExpect(content().json(objectMapper.writeValueAsString(patient)));
+    }
+
+    @Test
+    void should_create_patient_send_other_class() throws Exception {
+        //TODO: This class must implement validations, this test should fail or throw exception
+        Room room = new Room();
+
+        mockMvc.perform(post("/api/patient").contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(room)))
+                .andExpect(status().isCreated());
+    }
+
+    @Test
+    void should_delete_patient() throws Exception {
+        Patient patient = new Patient("mario","lasso",15,"mario@email.com");
+        patient.setId(10);
+        Optional<Patient> optionalPatient = Optional.of(patient);
+
+        when(patientRepository.findById(patient.getId())).thenReturn(optionalPatient);
+
+        assertThat(optionalPatient).isPresent();
+        assertThat(optionalPatient.get().getId()).isEqualTo(patient.getId());
+        assertThat(patient.getId()).isEqualTo(10);
+
+        mockMvc.perform(delete("/api/patients/" + patient.getId()))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void should_not_delete_patient() throws Exception {
+        long id = 30;
+
+        mockMvc.perform(delete("/api/patient/" + id))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void should_delete_all_patients() throws Exception {
+        mockMvc.perform(delete("/api/patients"))
+                .andExpect(status().isOk());
+    }
+
 
 }
 
