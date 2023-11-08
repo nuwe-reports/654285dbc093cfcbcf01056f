@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,18 +53,23 @@ public class AppointmentController {
         }
     }
 
-    //TODO: should be implement a ErrorHandler or Custom response
     @PostMapping("/appointment")
-    public ResponseEntity<?> createAppointment(@RequestBody Appointment appointment){
-        try {
-            Appointment appointmentCreated = appointmentRepository.save(appointment);
-            return new ResponseEntity<>(appointmentCreated,HttpStatus.OK);
-        }catch (PersistenceException e){
-            String message = "Error al almacenar en la base de datos: ";
-            return new ResponseEntity<>(
-                    message + e.getMessage(),
-                    HttpStatus.INTERNAL_SERVER_ERROR);
+    public ResponseEntity<Appointment> createAppointment(@RequestBody Appointment appointment){
+
+        if (appointment.getStartsAt().equals(appointment.getFinishesAt()) ||
+                appointment.getStartsAt().isAfter(appointment.getFinishesAt())){
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
+
+        List<Appointment> appointments = appointmentRepository.findAll();
+
+        if (validateAppointment(appointment,appointments)){
+            return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
+        }
+
+        Appointment appointmentCreated = appointmentRepository.save(appointment);
+        return new ResponseEntity<>(appointmentCreated,HttpStatus.OK);
+
     }
 
 
@@ -86,6 +92,19 @@ public class AppointmentController {
     public ResponseEntity<HttpStatus> deleteAllAppointments(){
         appointmentRepository.deleteAll();
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    boolean validateAppointment(Appointment appointmentToCreate, List<Appointment> appointments){
+        boolean isOverlap = false;
+
+        for (Appointment element : appointments) {
+            if (element.overlaps(appointmentToCreate)) {
+                //isOverlap = true;
+                //break;
+                return true;
+            }
+        }
+        return false;
     }
 
 }
