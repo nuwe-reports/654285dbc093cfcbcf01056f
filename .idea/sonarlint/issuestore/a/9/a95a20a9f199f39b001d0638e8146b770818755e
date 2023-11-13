@@ -1,0 +1,8 @@
+
+b
+java:S46849"@Replace this persistent entity with a simple POJO or DTO object.(Ν¬Ισϊÿÿÿÿ8ιμα‚»1
+K
+java:S1481`".Remove this unused "isOverlap" local variable.(δΨ8Είβ‚»1
+]	java:S125d"<This block of commented-out lines of code should be removed.(Ίÿώÿÿÿÿ8σμα‚»1
+`
+java:S1128"CRemove this unused import 'javax.persistence.PersistenceException'.(µ¨¨8ΰΔάƒ»1
