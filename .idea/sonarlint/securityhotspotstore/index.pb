@@ -27,3 +27,9 @@ a
 1src/main/java/com/example/demo/entities/Room.java,4\3\438c8ea43a23dd99a619fa927639bf4dbd02ffb3
 n
 >src/main/java/com/example/demo/controllers/RoomController.java,b\b\bbb82de4e63fc91037048f35197cec04dc1cf675
+c
+3src/main/java/com/example/demo/entities/Doctor.java,7\a\7a2dd00ed55cdab6bafa709e0e3c54282013b76a
+d
+4src/main/java/com/example/demo/entities/Patient.java,1\9\193e1edae31ea98c842f2d710ba383e6105628f5
+c
+3src/main/java/com/example/demo/entities/Person.java,1\7\17395b1c22266faabc1796548b1edf5c1c3f5ead
