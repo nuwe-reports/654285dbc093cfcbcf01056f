@@ -33,3 +33,9 @@ d
 4src/main/java/com/example/demo/entities/Patient.java,1\9\193e1edae31ea98c842f2d710ba383e6105628f5
 c
 3src/main/java/com/example/demo/entities/Person.java,1\7\17395b1c22266faabc1796548b1edf5c1c3f5ead
+q
+Asrc/main/java/com/example/demo/controllers/PatientController.java,5\0\5015a363cfad02c7bb4088047b981b5b0166b38a
+p
+@src/main/java/com/example/demo/controllers/DoctorController.java,b\7\b78140238794ae6b3b484e86c960bdfd1df4c93b
+V
+&Accwe-hospital.postman_collection.json,a\c\ac70edc3498388d10b12e77e1be9d7f35d814ecc
